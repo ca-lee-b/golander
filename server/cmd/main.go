@@ -24,12 +24,12 @@ func main() {
 
 	err = api.Listen()
 	if err != nil {
-		logger.Error("Failed to gracefully shutdown server")
+		logger.Error("Failed to gracefully shutdown server, %v", err)
 	}
 
 	err = db.Close()
 	if err != nil {
-		logger.Error("Failed to close database connection")
+		logger.Error("Failed to close database connection, %v", err)
 	}
 
 	logger.Info("Successfully shutdown")

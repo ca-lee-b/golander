@@ -18,12 +18,12 @@ func ConnectToPostgres() *sql.DB {
 
 	db, err := sql.Open("postgres", connString)
 	if err != nil {
-		panic("db: failed to connect to database")
+		panic(fmt.Sprintf("db: failed to connect to database, %v", err))
 	}
 
 	err = db.Ping()
 	if err != nil {
-		panic("db: failed to ping database")
+		panic(fmt.Sprintf("db: failed to ping database, %v", err))
 	}
 
 	return db
