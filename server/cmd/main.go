@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/ca-lee-b/golander/server/internal/api"
+	"github.com/ca-lee-b/golander/server/internal/db"
 	"github.com/ca-lee-b/golander/server/internal/log"
 	"github.com/joho/godotenv"
 )
@@ -16,16 +17,19 @@ func main() {
 
 	logger := log.New()
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		logger.Error("No port environment variable found")
-	}
+	db := db.ConnectToPostgres()
+	logger.Info("Connected to database")
 
-	api := api.New(port, logger)
+	api := api.New(os.Getenv("PORT"), logger)
 
 	err = api.Listen()
 	if err != nil {
 		logger.Error("Failed to gracefully shutdown server")
+	}
+
+	err = db.Close()
+	if err != nil {
+		logger.Error("Failed to close database connection")
 	}
 
 	logger.Info("Successfully shutdown")
