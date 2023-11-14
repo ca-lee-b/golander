@@ -10,27 +10,31 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/ca-lee-b/golander/server/internal/repositories"
 	"github.com/go-chi/chi/v5"
 )
 
 type Api struct {
-	Port string
+	Port        string
+	UserHandler *UserHandler
 
 	Router *chi.Mux
 	Logger *slog.Logger
 }
 
-func New(port string, logger *slog.Logger) *Api {
+func New(port string, repos *repositories.Repositories, logger *slog.Logger) *Api {
 	r := chi.NewRouter()
 
 	return &Api{
-		Port:   port,
-		Router: r,
-		Logger: logger,
+		Port:        port,
+		UserHandler: newUserHandler(repos.UserRepository),
+		Router:      r,
+		Logger:      logger,
 	}
 }
 
 func (a *Api) Listen() error {
+	a.initRoutes()
 	formatted := fmt.Sprintf(":%v", a.Port)
 
 	srv := &http.Server{
@@ -42,6 +46,7 @@ func (a *Api) Listen() error {
 	signal.Notify(shutdown, os.Interrupt, syscall.SIGTERM)
 
 	go func() {
+		a.Logger.Info(fmt.Sprintf("Listening on port %v", a.Port))
 		err := srv.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
 			panic("Failed to start server")
@@ -49,7 +54,7 @@ func (a *Api) Listen() error {
 	}()
 
 	<-shutdown
-	a.Logger.Info("Shutdown signal recieved")
+	a.Logger.Info("Beginning graceful shutdown")
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
