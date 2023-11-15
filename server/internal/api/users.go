@@ -9,12 +9,12 @@ import (
 )
 
 type UserHandler struct {
-	repo *repositories.UserRepository
+	userRepository *repositories.UserRepository
 }
 
 func newUserHandler(repo *repositories.UserRepository) *UserHandler {
 	return &UserHandler{
-		repo: repo,
+		userRepository: repo,
 	}
 }
 
@@ -26,7 +26,7 @@ func (h *UserHandler) GetOneById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user := h.repo.GetOneById(id)
+	user := h.userRepository.GetOneById(id)
 	if user == nil {
 		w.WriteHeader(404)
 		w.Write([]byte("Not Found"))

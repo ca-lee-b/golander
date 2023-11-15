@@ -15,8 +15,9 @@ import (
 )
 
 type Api struct {
-	Port        string
-	UserHandler *UserHandler
+	Port         string
+	UserHandler  *UserHandler
+	EventHandler *EventHandler
 
 	Router *chi.Mux
 	Logger *slog.Logger
@@ -26,10 +27,11 @@ func New(port string, repos *repositories.Repositories, logger *slog.Logger) *Ap
 	r := chi.NewRouter()
 
 	return &Api{
-		Port:        port,
-		UserHandler: newUserHandler(repos.UserRepository),
-		Router:      r,
-		Logger:      logger,
+		Port:         port,
+		UserHandler:  newUserHandler(repos.UserRepository),
+		EventHandler: newEventHandler(repos.EventRepository),
+		Router:       r,
+		Logger:       logger,
 	}
 }
 
