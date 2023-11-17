@@ -18,11 +18,20 @@ func newEventRepository(db *sql.DB) *EventRepository {
 	}
 }
 
+func (r *EventRepository) AddParticipant(id int, participant string) error {
+	_, err := r.db.Exec("UPDATE events SET participants = array_append(participants, $1) WHERE id = $2", participant, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (r *EventRepository) GetOneById(id int) *models.Event {
 	var event models.Event
 	row := r.db.QueryRow("SELECT * FROM events WHERE id = $1", id)
 
-	err := row.Scan(&event.Id, &event.Title, &event.Owner_id, &event.Created_at, &event.Available_dates)
+	err := row.Scan(&event.Id, &event.Title, &event.Owner_id, &event.Created_at, pq.Array(&event.Available_dates), &event.Participants)
 	if err != nil {
 		fmt.Printf("err %v", err)
 		return nil

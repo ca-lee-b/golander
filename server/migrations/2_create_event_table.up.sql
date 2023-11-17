@@ -7,6 +7,8 @@ CREATE TABLE events(
     created_at DATE NOT NULL DEFAULT CURRENT_DATE,
     available_dates DATE[],
 
+    participants UUID[],
+
     CONSTRAINT fk_owner FOREIGN KEY(owner_id) REFERENCES users(id),
     PRIMARY KEY (id)
 );
