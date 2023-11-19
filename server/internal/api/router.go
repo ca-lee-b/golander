@@ -1,8 +1,20 @@
 package api
 
-import "github.com/go-chi/chi/v5"
+import (
+	"os"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/cors"
+)
 
 func (a *Api) initRoutes() {
+	a.Router.Use(cors.Handler(cors.Options{
+		AllowedOrigins:   []string{os.Getenv("FRONTEND_URL"), "http://localhost:8080"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowCredentials: true,
+	}))
+
 	a.Router.Post("/login", a.AuthHandler.Login)
 	a.Router.Post("/register", a.AuthHandler.Register)
 

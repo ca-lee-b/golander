@@ -1,2 +1,13 @@
 server/.env
 server/bin
+
+web/node_modules
+web/.next/
+web/out/
+web/build 
+web/DS_Store
+web/npm-debug.log* 
+web/.env
+web/.vercel
+web/*.tsbuildinfo
+web/next-env.d.ts

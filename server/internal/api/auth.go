@@ -35,6 +35,14 @@ func (h *AuthHandler) WithToken(next http.Handler) http.Handler {
 
 		verify := verifyToken(cookie.Value)
 		if !verify {
+			c := &http.Cookie{
+				Name:     "token",
+				Value:    "",
+				MaxAge:   -1,
+				HttpOnly: true,
+			}
+
+			http.SetCookie(w, c)
 			w.WriteHeader(401)
 			w.Write([]byte("Unauthorized"))
 			return
