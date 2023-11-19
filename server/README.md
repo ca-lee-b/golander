@@ -6,6 +6,7 @@
 - godotenv
 - pq
 - bcrypt
+- golang-jwt
 
 ### Development
 

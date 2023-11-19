@@ -17,6 +17,18 @@ func newUserRepository(db *sql.DB) *UserRepository {
 	}
 }
 
+func (r *UserRepository) GetOneByEmail(email string) *models.User {
+	var user models.User
+	row := r.db.QueryRow("SELECT * FROM users WHERE email = $1", email)
+
+	err := row.Scan(&user.Id, &user.Email, &user.Password)
+	if err != nil {
+		return nil
+	}
+
+	return &user
+}
+
 func (r *UserRepository) GetOneById(id string) *models.User {
 	var user models.User
 	row := r.db.QueryRow("SELECT * FROM users WHERE id = $1", id)

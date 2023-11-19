@@ -16,6 +16,7 @@ import (
 
 type Api struct {
 	Port         string
+	AuthHandler  *AuthHandler
 	UserHandler  *UserHandler
 	EventHandler *EventHandler
 
@@ -28,6 +29,7 @@ func New(port string, repos *repositories.Repositories, logger *slog.Logger) *Ap
 
 	return &Api{
 		Port:         port,
+		AuthHandler:  newAuthHandler(repos.UserRepository),
 		UserHandler:  newUserHandler(repos.UserRepository),
 		EventHandler: newEventHandler(repos.EventRepository),
 		Router:       r,
